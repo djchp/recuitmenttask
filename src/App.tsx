@@ -43,7 +43,7 @@ function App() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [modalData, setModalData] = useState<Product>({});
+  const [modalData, setModalData] = useState<Product>({color: '', id: 0, name: '', pantone_value: '', year: 0});
   
   const queryClient = useQueryClient();
   const [params, setParams] = useSearchParams();
@@ -91,7 +91,7 @@ function App() {
           label="filter_by_id"
           value={filterValue}
           onChange={(e) => {
-            setFilterValue(e.target.value)
+            setFilterValue(Number(e.target.value))
           }}
           
         ></TextField>
