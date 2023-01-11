@@ -121,7 +121,7 @@ function App() {
           }}
           value={filterValue}
           onChange={(e) => {
-            setFilterValue(e.target.value);
+            setFilterValue(Number(e.target.value));
           }}
         ></TextField>
         {/* <Link to={`?id=${filterValue}`}>filter</Link> */}
