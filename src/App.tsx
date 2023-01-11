@@ -43,8 +43,14 @@ function App() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [modalData, setModalData] = useState<Product>({color: '', id: 0, name: '', pantone_value: '', year: 0});
-  
+  const [modalData, setModalData] = useState<Product>({
+    color: "",
+    id: 0,
+    name: "",
+    pantone_value: "",
+    year: 0,
+  });
+
   const queryClient = useQueryClient();
   const [params, setParams] = useSearchParams();
   const ppage = parseInt(params.get("page")!) || 1;
@@ -71,17 +77,38 @@ function App() {
     data: products,
     refetch,
   } = useQuery({
-    queryKey: ["products", { ppage }],
+    queryKey: ["products", { ppage }, { id }],
     queryFn: () => fetchData(ppage, filterValue),
     keepPreviousData: true,
+    refetchOnWindowFocus: false,
   });
   const navigate = useNavigate();
   if (status === "loading") {
-    return <Divider>Loading</Divider>;
+    return (
+      <Divider>
+        <Typography>Loading</Typography>
+      </Divider>
+    );
   }
   if (status === "error") {
-    return <Divider>faled to fetch</Divider>;
+    return (
+      <Divider>
+        <Divider>
+          <Typography>Item with this id does not exist</Typography>
+          <Button
+            variant="contained"
+            onClick={() => {
+              navigate("/");
+              navigate(0);
+            }}
+          >
+            return{" "}
+          </Button>
+        </Divider>
+      </Divider>
+    );
   }
+  console.log(error);
   return (
     <>
       <Stack direction="column" alignItems="center">
@@ -89,17 +116,24 @@ function App() {
           id="filter_by_number"
           type="number"
           label="filter_by_id"
+          InputProps={{
+            inputProps: { min: 0, max: 12 },
+          }}
           value={filterValue}
           onChange={(e) => {
-            setFilterValue(Number(e.target.value))
+            setFilterValue(e.target.value);
           }}
-          
         ></TextField>
         {/* <Link to={`?id=${filterValue}`}>filter</Link> */}
-          <button onClick={() => {
-            navigate(`?id=${filterValue}`)
-            refetch()
-          }}>filter</button>
+        <Button
+          variant="contained"
+          onClick={() => {
+            navigate(`?id=${filterValue}`);
+            refetch();
+          }}
+        >
+          filter
+        </Button>
         <Table sx={{ width: "60%" }}>
           <TableHead>
             <TableRow>
@@ -161,9 +195,17 @@ function App() {
             )}
           </TableBody>
         </Table>
-        {ppage <= 1 ? null : <Link to={`?page=${ppage - 1}`}>Prev Page</Link>}
-        <p>current page: {ppage}</p>
-        {ppage >= 3 ? null : <Link to={`?page=${ppage + 1}`}>Next Page</Link>}
+        {ppage <= 1 ? null : (
+          <Link to={`?page=${ppage - 1}`}>
+            <Typography>Prev Page</Typography>
+          </Link>
+        )}
+        <Typography>current page: {ppage}</Typography>
+        {ppage >= 3 ? null : (
+          <Link to={`?page=${ppage + 1}`}>
+            <Typography>Next Page</Typography>
+          </Link>
+        )}
       </Stack>
 
       <Modal open={open} onClose={handleClose}>
