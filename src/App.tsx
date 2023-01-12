@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Stack } from "@mui/system";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import getData from "./helpers/getData";
@@ -28,6 +28,14 @@ function App() {
     keepPreviousData: true,
     refetchOnWindowFocus: false,
   });
+
+  useEffect(() => {
+    if (products.total) {
+      setMax(products.total)
+    }
+  }, [])
+  
+
   if (status === "loading") {
     return (
       <Divider>
@@ -53,7 +61,7 @@ function App() {
       </Divider>
     );
   }
-  console.log(products.total)
+  console.log(max)
   return (
     <>
       <Stack direction="column" alignItems="center">
@@ -62,7 +70,7 @@ function App() {
           type="number"
           label="filter_by_id"
           InputProps={{
-            inputProps: { min: 0, max: products.total },
+            inputProps: { min: 0, max: max },
           }}
           value={filterValue}
           onChange={(e) => {
