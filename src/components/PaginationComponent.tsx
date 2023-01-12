@@ -5,9 +5,10 @@ import Products from "../types/Products";
 type Props = {
   ppage: number;
   products: Products;
+  pagemax: number
 };
 
-const PaginationComponent = ({ products, ppage }: Props) => {
+const PaginationComponent = ({ products, ppage, pagemax }: Props) => {
   return (
     <div>
       {Array.isArray(products.data) ? (
@@ -18,7 +19,7 @@ const PaginationComponent = ({ products, ppage }: Props) => {
             </Link>
           )}
           <Typography>current page: {ppage}</Typography>
-          {ppage >= products.total_pages ? null : (
+          {ppage >= pagemax ? null : (
             <Link to={`?page=${ppage + 1}`}>
               <Typography>Next Page</Typography>
             </Link>

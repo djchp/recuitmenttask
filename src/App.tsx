@@ -5,18 +5,20 @@ import Typography from "@mui/material/Typography";
 import { Stack } from "@mui/system";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { useSearchParams, Link, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import getData from "./helpers/getData";
 import "./App.css";
 import TableComponent from "./components/TableComponent";
 import PaginationComponent from "./components/PaginationComponent";
+import getMax from "./helpers/getMax";
 
 function App() {
   const [params, setParams] = useSearchParams();
   const ppage = parseInt(params.get("page")!) || 1;
   const id = parseInt(params.get("id")!);
   const [filterValue, setFilterValue] = useState(id);
-  const [max, setMax] = useState()
+  const [max, setMax] = useState<number>();
+  const [maxPage, setMaxPage] = useState<number>();
   const navigate = useNavigate();
   const {
     status,
@@ -30,11 +32,17 @@ function App() {
   });
 
   useEffect(() => {
-    if (products.total) {
-      setMax(products.total)
-    }
-  }, [])
-  
+    const get = async () => {
+      const maxes = await getMax();
+      if (maxes.total) {
+        setMax(maxes.total);
+      }
+      if (maxes.total_pages) {
+        setMaxPage(maxes.total_pages);
+      }
+    };
+    get();
+  }, []);
 
   if (status === "loading") {
     return (
@@ -61,7 +69,7 @@ function App() {
       </Divider>
     );
   }
-  console.log(max)
+  console.log(max);
   return (
     <>
       <Stack direction="column" alignItems="center">
@@ -91,17 +99,16 @@ function App() {
             color="error"
             variant="contained"
             onClick={() => {
-              navigate("/")
-              navigate(0)
+              navigate("/");
+              navigate(0);
             }}
           >
             reset
           </Button>
-          
         </Stack>
 
         <TableComponent products={products} />
-        <PaginationComponent products={products} ppage={ppage} />
+        <PaginationComponent products={products} ppage={ppage} pagemax={maxPage!}/>
       </Stack>
     </>
   );
