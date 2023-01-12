@@ -17,6 +17,7 @@ function App() {
   const ppage = parseInt(params.get("page")!) || 1;
   const id = parseInt(params.get("id")!);
   const [filterValue, setFilterValue] = useState(id);
+  const [max, setMax] = useState()
   const navigate = useNavigate();
   const {
     status,
@@ -28,7 +29,6 @@ function App() {
     keepPreviousData: true,
     refetchOnWindowFocus: false,
   });
-
   if (status === "loading") {
     return (
       <Divider>
@@ -54,7 +54,7 @@ function App() {
       </Divider>
     );
   }
-  console.log(products)
+  console.log(products.total)
   return (
     <>
       <Stack direction="column" alignItems="center">
