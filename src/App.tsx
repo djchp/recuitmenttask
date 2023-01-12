@@ -10,7 +10,6 @@ import getData from "./helpers/getData";
 import "./App.css";
 import TableComponent from "./components/TableComponent";
 import PaginationComponent from "./components/PaginationComponent";
-import getInitialData from "./helpers/getInitialData";
 
 function App() {
   const [params, setParams] = useSearchParams();
